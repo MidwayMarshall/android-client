@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -226,13 +228,68 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 
 		shinyChooser.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					poke().shiny = true;
-				} else {
-					poke().shiny = false;
-				}
-			}
-		});
+                if (isChecked) {
+                    poke().shiny = true;
+                } else {
+                    poke().shiny = false;
+                }
+            }
+        });
+
+        manualIVButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View view = LayoutInflater.from(getActivity()).inflate(R.layout.iv_changer, null);
+                final EditText[] inputs = new EditText[6];
+                inputs[0] =  (EditText) view.findViewById(R.id.iv1);
+                inputs[1] = (EditText) view.findViewById(R.id.iv2);
+                inputs[2] = (EditText) view.findViewById(R.id.iv3);
+                inputs[3] = (EditText) view.findViewById(R.id.iv4);
+                inputs[4] = (EditText) view.findViewById(R.id.iv5);
+                inputs[5] = (EditText) view.findViewById(R.id.iv6);
+                final byte gen = poke().gen().num;
+                for (int i = 0; i < 6; i++) {
+                    inputs[i].setText(poke().dv(i));
+                }
+                for (int i = 0; i < 6; i++) {
+                    inputs[i].addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            String test = "";
+                        }
+
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            String test = "";
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            String test = "";
+                        }
+                    });
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("IVs")
+                        .setView(view)
+                        .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                updateStats();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                dialog.cancel();
+                            }
+                        })
+
+                ;
+                builder.create().show();
+            }
+        });
 
         hackmonButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,8 +304,8 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
             }
         });
 
-		return v;
-	}
+        return v;
+    }
 
     private ArrayList<String> genderNames = new ArrayList<String>() {{
         add("Neutral");
