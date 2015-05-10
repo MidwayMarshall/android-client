@@ -75,8 +75,6 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
         manualIVButton = (Button) v.findViewById(R.id.manualiv);
         hackmonButton = (ToggleButton) v.findViewById(R.id.hackmon);
 
-        manualIVButton.setEnabled(false);
-
 		ArrayList<SpinnerData> temp = new ArrayList<SpinnerData>();
 		int usefulItems[] = ItemInfo.getUsefulThisGeneration();
 		for (int usefulItem : usefulItems) {
@@ -195,7 +193,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-								int i = Integer.parseInt(link);
+                                int i = 0;
+                                if (link.length() != 0) {
+                                    i = Integer.parseInt(link);
+                                }
 								if (i > 100) i = 100;
 								poke().level = (byte) i;
 								levelChooser.setText(" Lvl: " + i);
@@ -217,7 +218,10 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 						.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String link = input.getText().toString();
-								int i = Integer.parseInt(link);
+                                int i = 0;
+								if (link.length() != 0) {
+                                    i = Integer.parseInt(link);
+                                }
 								if (i > 255) i = 255;
 								poke().happiness = (byte) i;
 								happinessChooser.setText("Happy: " + i);
@@ -249,8 +253,9 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                 inputs[5] = (EditText) view.findViewById(R.id.iv6);
                 final byte gen = poke().gen().num;
                 for (int i = 0; i < 6; i++) {
-                    inputs[i].setText(poke().dv(i));
+                    inputs[i].setText(String.valueOf(poke().dv(i)));
                 }
+                /*
                 for (int i = 0; i < 6; i++) {
                     inputs[i].addTextChangedListener(new TextWatcher() {
                         @Override
@@ -269,12 +274,27 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
                         }
                     });
                 }
+                */
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("IVs")
                         .setView(view)
                         .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                for (int i = 0; i < 6; i++) {
+                                    int temp;
+                                    if (inputs[i].getText().toString().length() == 0) {
+                                        temp = 0;
+                                    } else {
+                                        temp = Integer.decode(inputs[i].getText().toString());
+                                        if (gen > 2) {
+                                            if (temp > 31) temp = 31;
+                                        } else {
+                                            if (temp > 15) temp = 15;
+                                        }
+                                    }
+                                    poke().DVs[i] = (byte) temp;
+                                }
                                 updateStats();
                             }
                         })
@@ -446,11 +466,13 @@ public class PokemonDetailsFragment extends Fragment implements EVListener {
 			genderChooser.setVisibility(View.VISIBLE);
 			itemChooser.setVisibility(View.VISIBLE);
 			happinessChooser.setVisibility(View.VISIBLE);
+            manualIVButton.setEnabled(true);
 		} else {
 			shinyChooser.setVisibility(View.GONE);
 			genderChooser.setVisibility(View.GONE);
 			itemChooser.setVisibility(View.GONE);
 			happinessChooser.setVisibility(View.GONE);
+            manualIVButton.setEnabled(false);
 		}
 
 		levelChooser.setText(" Lvl: " + tempPoke.level());

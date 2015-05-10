@@ -16,9 +16,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="IV"/>
+                android:text="@string/IV"/>
         <EditText
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
@@ -37,9 +37,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="IV"/>
+                android:text="@string/IV"/>
         <EditText
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
@@ -58,9 +58,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="IV"/>
+                android:text="@string/IV"/>
         <EditText
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
@@ -79,10 +79,10 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="IV"
+                android:text="@string/IV"
                 android:id="@+id/textView"/>
         <EditText
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
@@ -101,9 +101,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="IV"/>
+                android:text="@string/IV"/>
         <EditText
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
@@ -122,9 +122,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:paddingLeft="15px"
                 android:paddingRight="15px"
-                android:text="IV"/>
+                android:text="@string/IV"/>
         <EditText
-                android:layout_width="50dp"
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:ems="10"
