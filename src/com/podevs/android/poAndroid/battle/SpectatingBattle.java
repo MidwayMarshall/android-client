@@ -214,7 +214,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						if (!baked) wait(10000); else wait(1000);
+						if (!baked) wait(7000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -264,7 +264,7 @@ public class SpectatingBattle {
 				try {
 					synchronized (this) {
 						netServ.playCry(this, currentPoke(player));
-						if (!baked) wait(10000); else wait(2000);
+						if (!baked) wait(7000); else wait(2000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
 			}
@@ -704,7 +704,7 @@ public class SpectatingBattle {
 						//Log.e(TAG, change + "");
                         if (change < 0) change = -change;
                         if (change > 100) change = 100;
-						if (!baked) wait(10000); else wait(change*43);
+						if (!baked) wait(7000); else wait(change*43);
 					}
 				} catch (InterruptedException e) {}
 			}
@@ -723,15 +723,15 @@ public class SpectatingBattle {
 	}
 
     private void onOpponentDisconnect(boolean come) {
-        if (come) {
-            if (containsClause(Clauses.NoTimeOut.ordinal())) {
-                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected! You can wait for their time to run out if you want the win.</font>"));
-            } else {
-                writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected!</font>"));
-            }
-        } else {
-            writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " logged back in and is ready to resume the battle!</font>"));
-        }
+		if (!come) {
+			if (containsClause(Clauses.NoTimeOut.ordinal())) {
+				writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected!</font>"));
+			} else {
+				writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " got disconnected! You can wait for their time to run out if you want the win.</font>"));
+			}
+		} else {
+			writeToHist(Html.fromHtml("<br/><font color=" + QtColor.DarkBlue + players[opp].nick() + " logged back in and is ready to resume the battle!</font>"));
+		}
     }
 
     private boolean containsClause(int clause) {
