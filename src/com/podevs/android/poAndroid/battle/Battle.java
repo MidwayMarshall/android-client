@@ -47,7 +47,6 @@ public class Battle extends SpectatingBattle {
 		for (int i = 0; i < 4; i++)
 			displayedMoves[i] = new BattleMove();
 
-        startTime = System.currentTimeMillis();
 	}
 
 
@@ -128,7 +127,7 @@ public class Battle extends SpectatingBattle {
 			if (prefs.getBoolean("pokemon_cries", true)) {
 				try {
 					synchronized (this) {
-						netServ.playCry(this, currentPoke(player));
+						//netServ.playCry(this, currentPoke(player));
 						if (!baked) wait(5000); else wait(1000);
 					}
 				} catch (InterruptedException e) { Log.e(TAG, "INTERRUPTED"); }
@@ -309,8 +308,11 @@ public class Battle extends SpectatingBattle {
 				activity.updateMovePP(moveNum);
 			break;
 		} case DynamicStats: {
-			for (int i = 0; i < 5; i++)
-				myTeam.pokes[player / 2].stats[i] = msg.readShort();
+			for (int i = 0; i < 5; i++) {
+				Short by = msg.readShort();
+				myTeam.pokes[player / 2].stats[i] = by;
+				Log.e("STATS2", "i = " + i + "   short = " + by);
+			}
 			break;
 		} case UseItem: {
 			byte item = msg.readByte();

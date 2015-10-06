@@ -632,12 +632,12 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
             if (battle == null) {
                 battle = netServ.spectatedBattles.get(battleId);
             }
-            Log.e(TAG, "Binding at State Time: " + (System.currentTimeMillis() - battle.startTime));
 
             if (battle == null) {
                 startActivity(new Intent(BattleActivity.this, ChatActivity.class));
                 finish();
 
+                netServ.closeBattle(battleId); //remove the possibly ongoing notification
                 netServ.closeBattle(battleId); //remove the possibly ongoing notification
                 return;
             }
@@ -780,7 +780,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
 
             checkRearrangeTeamDialog();
 
-            Log.e(TAG, "Connection finished at State Time: " + (System.currentTimeMillis() - battle.startTime));
             //    Runtime.getRuntime().gc();
         }
 
@@ -1007,6 +1006,16 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                 dialog = builder.create();
 
                 mDragLayer = (DragLayer)layout.findViewById(R.id.drag_my_poke);
+                nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
+                String s = "HP:";
+                s += "\nAttack:";
+                s += "\nDefense:";
+                s += "\nSp. Att:";
+                s += "\nSp. Def:";
+                s += "\nSpeed:";
+                statNames.setText(s);
+                statNums.setText(activeBattle.myTeam.pokes[0].printStats());
+                moves.setText(activeBattle.myTeam.pokes[0].movesString());
                 mDragLayer.addDragListener(new DragController.DragListener() {
                     @Override
                     public void onDragStart(View v, DragSource source, Object info, int dragAction) {
@@ -1039,16 +1048,6 @@ public class BattleActivity extends FragmentActivity implements MyResultReceiver
                     oppArrangePokeIcons[i] = (ImageView)layout.findViewById(resources.getIdentifier("foe_arrange_poke" + (i+1), "id", InfoConfig.pkgName));
                     oppArrangePokeIcons[i].setImageDrawable(PokemonInfo.iconDrawableCache(oppPoke.uID));
                 }
-                nameAndType.setText(activeBattle.myTeam.pokes[0].nameAndType());
-                String s = "HP:";
-                s += "\nAttack:";
-                s += "\nDefense:";
-                s += "\nSp. Att:";
-                s += "\nSp. Def:";
-                s += "\nSpeed:";
-                statNames.setText(s);
-                statNums.setText(activeBattle.myTeam.pokes[0].printStats());
-                moves.setText(activeBattle.myTeam.pokes[0].movesString());
                 return dialog;
             }
             case ConfirmForfeit:

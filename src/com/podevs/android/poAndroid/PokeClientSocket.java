@@ -1,5 +1,6 @@
 package com.podevs.android.poAndroid;
 
+import android.util.Log;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 
@@ -79,12 +80,20 @@ public class PokeClientSocket {
 	 * @throws IOException forwarded from the socket functions
 	 * @throws ParseException if the server sent a packet too big for us to handle
 	 */
+	boolean debug = true;
+	int infinite = 0;
 	public Bais getMsg() throws IOException, ParseException {
 		ByteBuffer packetLength = ByteBuffer.allocate(4);
 		ByteBuffer data = ByteBuffer.allocate(4096);
 
-		while (packetLength.position() < packetLength.capacity()) {
+		while (packetLength.position() < packetLength.capacity() && debug) {
 			schan.read(packetLength);
+			infinite++;
+			if (infinite > 1000000) {
+				debug = false;
+				Log.e(TAG, "TIME OUT a million iterations without data");
+				infinite = 0;
+			}
 		}
 		packetLength.rewind();
 		int remaining = packetLength.getInt();
@@ -107,6 +116,10 @@ public class PokeClientSocket {
 
 		Bais ret = new Bais(msg.toByteArray());
 		msg.close();
+		if (!debug) {
+			debug = true;
+			return null;
+		}
 		return ret;
 	}
 

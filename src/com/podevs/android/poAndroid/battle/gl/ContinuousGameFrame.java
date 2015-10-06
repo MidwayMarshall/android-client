@@ -1,10 +1,10 @@
 package com.podevs.android.poAndroid.battle.gl;
 
-import android.os.Looper;
 import android.util.Log;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -17,6 +17,8 @@ import com.podevs.android.poAndroid.battle.BattleActivity;
 import com.podevs.android.poAndroid.battle.BattleActivityBaked2;
 import com.podevs.android.poAndroid.battle.gl.tasks.Event;
 import com.podevs.android.poAndroid.battle.gl.tasks.TaskService2;
+
+import java.util.ArrayList;
 // Only do texture calls from GL frame;
 // Try to do all commands on another thread
 
@@ -24,13 +26,14 @@ public class ContinuousGameFrame extends Game implements InputProcessor {
     private static final String TAG = "ContinuousGameFrame";
     public TaskService2 service;
 
-    private SpriteBatch batch;
+    public SpriteBatch batch;
     private BitmapFont font;
     private TextureAtlas battleAtlas;
     private Image background;
     public SpriteAnimation[] sprites = new SpriteAnimation[2];
     public TextureAtlas[] spriteAtlas = new TextureAtlas[2];
     public BattleInfoHUD[] HUDs = new BattleInfoHUD[2];
+    private Sound battleMusic;
 
     private final byte me = 0;
     private final byte opp = 1;
@@ -58,20 +61,38 @@ public class ContinuousGameFrame extends Game implements InputProcessor {
     @Override
     public void create() {
         long time = System.currentTimeMillis();
-        callBack.callForward(this);
-        activity = callBack.hook();
-        service = new TaskService2();
-        activity.callForward(this, service);
+        if (callBack != null) {
+            callBack.callForward(this);
+            activity = callBack.hook();
+            service = new TaskService2();
+            try {
+                activity.callForward(this, service);
 
-        calculateGUI();
+                calculateGUI();
 
-        setBackground(0);
+                setBackground(0);
 
-        HUDs[me] = new BattleInfoHUD(battleAtlas, true, scaledX, font);
-        HUDs[opp] = new BattleInfoHUD(battleAtlas, false, scaledX, font);
+                HUDs[me] = new BattleInfoHUD(battleAtlas, true, scaledX, font);
+                HUDs[opp] = new BattleInfoHUD(battleAtlas, false, scaledX, font);
 
-        Gdx.input.setInputProcessor(this);
-        Log.e(TAG, "Setup Complete in " + (System.currentTimeMillis() - time));
+                Gdx.input.setInputProcessor(this);
+                Log.e(TAG, "Setup Complete in " + (System.currentTimeMillis() - time));
+
+                battleMusic = Gdx.audio.newSound(Gdx.files.internal("data/music/palace.mp3"));
+                battleMusic.loop(0.1f);
+
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                this.dispose();
+            }
+        } else {
+            calculateGUI();
+            setBackground(0);
+            HUDs[me] = new BattleInfoHUD(battleAtlas, true, scaledX, font);
+            HUDs[opp] = new BattleInfoHUD(battleAtlas, false, scaledX, font);
+            updateSprite(true, "3", false);
+            updateSprite(false, "5", false);
+        }
     }
 
     private final static int FRAME_TARGET = 1000/32;
@@ -118,6 +139,7 @@ public class ContinuousGameFrame extends Game implements InputProcessor {
             }
         }
 
+
         long timeDiff = System.currentTimeMillis() - beginTime;
         sleepTime = (int) (FRAME_TARGET - timeDiff);
         if (sleepTime > 0 && Gdx.graphics.getFramesPerSecond() > 25) {
@@ -149,8 +171,8 @@ public class ContinuousGameFrame extends Game implements InputProcessor {
     private void draw() {
         background.draw(batch, 1f);
 
-        sprites[me].draw(elapsedTime, batch);
-        sprites[opp].draw(elapsedTime, batch);
+        drawPokemon(me);
+        drawPokemon(opp);
 
         HUDs[me].draw(batch);
         HUDs[opp].draw(batch);
@@ -176,12 +198,18 @@ public class ContinuousGameFrame extends Game implements InputProcessor {
     @Override
     public void dispose() {
         super.dispose();
-        battleAtlas.dispose();
-        font.dispose();
-        batch.dispose();
-        spriteAtlas[me].dispose();
-        spriteAtlas[opp].dispose();
-        ((TextureRegionDrawable) background.getDrawable()).getRegion().getTexture().dispose();
+        try {
+            battleAtlas.dispose();
+            font.dispose();
+            batch.dispose();
+            spriteAtlas[me].dispose();
+            spriteAtlas[opp].dispose();
+            ((TextureRegionDrawable) background.getDrawable()).getRegion().getTexture().dispose();
+            battleMusic.stop();
+            battleMusic.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean checkForFemaleAsset(boolean side, String path) {
@@ -232,10 +260,8 @@ public class ContinuousGameFrame extends Game implements InputProcessor {
         }
     }
 
-    private void checkForValidity() {
-        if (sprites[me] != null && sprites[opp] != null) {
-            STATUS_CURRENT = STATUS_RUNNING;
-        }
+    public void drawPokemon(byte player) {
+        sprites[player].draw(elapsedTime, batch);
     }
 
     public void setBackground(int id) {

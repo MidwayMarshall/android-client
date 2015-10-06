@@ -1,5 +1,6 @@
 package com.podevs.android.poAndroid.battle;
 
+import android.util.Log;
 import com.podevs.android.utilities.Bais;
 import com.podevs.android.utilities.Baos;
 import com.podevs.android.utilities.SerializeBytes;
@@ -17,8 +18,15 @@ public class BattleDynamicInfo implements SerializeBytes {
 	byte flags;
 	
 	public BattleDynamicInfo(Bais b) {
-		for(int i = 0; i < 7; i++) boosts[i] = b.readByte();
-		flags = b.readByte();
+		byte by = 0;
+		for(int i = 0; i < 7; i++) {
+			by = b.readByte();
+			boosts[i] = by;
+			Log.e("STATDUMP", "i = " + i + "  byte = " + by);
+		}
+		by = b.readByte();
+		flags = by;
+		Log.e("STATDUMP", "flags = " + by);
 	}
 
 	public void serializeBytes(Baos b) {

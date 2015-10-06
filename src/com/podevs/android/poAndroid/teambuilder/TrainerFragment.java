@@ -24,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.podevs.android.poAndroid.R;
+import com.podevs.android.poAndroid.colorpicker.ColorActivity;
 import com.podevs.android.poAndroid.player.PlayerProfile;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Team;
@@ -40,6 +41,7 @@ public class TrainerFragment extends Fragment {
 	private boolean profileChanged = false;
 	private AutoCompleteTextView teamTier = null;
 	private Spinner genChooser = null;
+	private View v;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,14 +53,17 @@ public class TrainerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.teambuilder_root, container, false);
+		v = inflater.inflate(R.layout.teambuilder_root, container, false);
 
 		Button importbutton = (Button)v.findViewById(R.id.importteambutton);
 		//Register onClick listener
 		importbutton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				//((TeambuilderActivity)getActivity()).onImportClicked();
-                ((TeambuilderActivity)getActivity()).buildDownloadDialog();
+                //((TeambuilderActivity)getActivity()).buildDownloadDialog();
+				Intent intent = new Intent(getActivity(), ColorActivity.class);
+				intent.putExtra("QColor", p.color.colorInt);
+				startActivityForResult(intent, TeambuilderActivity.PICKCOLOR_MM_RESULT_CODE);
 			}
 		});
 
@@ -73,6 +78,8 @@ public class TrainerFragment extends Fragment {
 		((EditText)v.findViewById(R.id.trainerInfo)).setText(p.trainerInfo.info);
 		((EditText)v.findViewById(R.id.winning_message)).setText(p.trainerInfo.winMsg);
 		((EditText)v.findViewById(R.id.losing_message)).setText(p.trainerInfo.loseMsg);
+		((Button)v.findViewById(R.id.color)).setBackgroundColor(p.color.colorInt);
+		((Button)v.findViewById(R.id.color)).setTextColor(p.color.colorInt ^ 0xffffff);
 		
 		teamTier = (AutoCompleteTextView)v.findViewById(R.id.teamTier);
 		genChooser = (Spinner)v.findViewById(R.id.gens);
@@ -239,6 +246,15 @@ public class TrainerFragment extends Fragment {
 			int colorInt = data.getIntExtra("org.openintents.extra.COLOR", p.color.colorInt);
 			p.color = new QColor(colorInt);
 			profileChanged = true;
+			((Button)v.findViewById(R.id.color)).setBackgroundColor(p.color.colorInt);
+			((Button)v.findViewById(R.id.color)).setTextColor(p.color.colorInt ^ 0xffffff);
+		}
+		if (requestCode == TeambuilderActivity.PICKCOLOR_MM_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+			int colorInt = data.getIntExtra("QColor", p.color.colorInt);
+			p.color = new QColor(colorInt);
+			profileChanged = true;
+			((Button)v.findViewById(R.id.color)).setBackgroundColor(p.color.colorInt);
+			((Button)v.findViewById(R.id.color)).setTextColor(p.color.colorInt ^ 0xffffff);
 		}
 	}
 

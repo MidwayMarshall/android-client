@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.podevs.android.poAndroid.battle.BattleActivityBaked2;
@@ -13,7 +12,6 @@ import com.podevs.android.poAndroid.battle.SpectatingBattle;
 
 public class GameFragment extends AndroidFragmentApplication implements ContinuousGameFrame.CallBacks2 {
     public BattleActivityBaked2 activity;
-    public SpectatingBattle battle;
     ContinuousGameFrame frame2;
 
     @Override

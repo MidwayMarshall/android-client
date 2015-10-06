@@ -53,6 +53,11 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+                android:name="com.podevs.android.poAndroid.colorpicker.ColorActivity"
+                android:label="@string/teambuilder"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name="com.podevs.android.poAndroid.chat.ChatActivity"
             android:parentActivityName="com.podevs.android.poAndroid.registry.RegistryActivity"
             android:configChanges="orientation"

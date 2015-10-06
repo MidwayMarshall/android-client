@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/primary_info"
+            android:paddingLeft="5dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <LinearLayout
@@ -52,6 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/team"
+
+            android:paddingLeft="5dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <LinearLayout
@@ -105,6 +108,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/optional"
+
+            android:paddingLeft="5dp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText

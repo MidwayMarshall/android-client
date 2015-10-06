@@ -1,0 +1,18 @@
+g.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+007
+  rotate: false
+  xy: 2, 2
+  size: 39, 44
+  orig: 43, 44
+  offset: 1, 0
+  index: -1
+008
+  rotate: false
+  xy: 2, 2
+  size: 39, 44
+  orig: 43, 44
+  offset: 1, 0
+  index: -1

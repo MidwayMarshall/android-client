@@ -139,6 +139,7 @@ public class MoveListAdapter implements ListAdapter {
 				+ "\nPower: " + MoveInfo.powerString(num)
 				+ "\nAccuracy: " + MoveInfo.accuracyString(num)
 				+ "\nClass: " + DamageClassInfo.name(MoveInfo.damageClass(num))
+				+ "\nTarget: " + MoveInfo.targetString(num)
 				+ "\n"
 				+ "\nEffect: " + MoveInfo.effect(num);
 	}

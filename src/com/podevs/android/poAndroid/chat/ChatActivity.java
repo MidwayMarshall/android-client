@@ -1282,6 +1282,17 @@ public class ChatActivity extends Activity {
     	unbindService(connection);
     	super.onDestroy();
     }
+
+	public void bannedTest(final CharSequence text) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (progressDialog.isShowing()) {
+					progressDialog.setMessage(text);
+				}
+			}
+		});
+	}
 }
 
 

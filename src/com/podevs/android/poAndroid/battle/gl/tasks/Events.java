@@ -1,6 +1,5 @@
 package com.podevs.android.poAndroid.battle.gl.tasks;
 
-import android.util.Log;
 import com.podevs.android.poAndroid.battle.BattlePoke;
 import com.podevs.android.poAndroid.battle.gl.ContinuousGameFrame;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
@@ -203,4 +202,21 @@ public class Events {
             Frame.setBackground(id);
         }
     }
+
+    /*
+    public static class StatChange implements Event {
+        byte player;
+        byte type;
+
+        public StatChange(byte player, byte type) {
+            this.player = player;
+            this.type = type;
+        }
+
+        @Override
+        public void run(ContinuousGameFrame Frame) {
+            Frame.addStatEffect(player, type);
+        }
+    }
+    */
 }

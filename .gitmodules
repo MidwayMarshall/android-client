@@ -1,3 +1,6 @@
 [submodule "viewpagerindicator"]
 	path = viewpagerindicator
 	url = https://github.com/coyotte508/Android-ViewPagerIndicator.git
+[submodule "BattleWindow"]
+	path = BattleWindow
+	url = https://github.com/MidwayMarshall/BattleWindow.git

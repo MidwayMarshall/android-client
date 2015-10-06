@@ -17,6 +17,9 @@ public class BattleConf implements SerializeBytes {
 	
 	public int id(int i) { return ids[i]; }
 	public byte mode() { return mode; };
+	// Mode 0 = singles
+	// Mode = 1 doubles
+	// Mode = 2 triples
 	
 	public BattleConf(Bais msg, boolean old) {
 		if (!old) {

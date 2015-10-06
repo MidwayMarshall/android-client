@@ -522,11 +522,22 @@ public class NetworkService extends Service {
 	private void readSocketMessages(PokeClientSocket socket) {
 		while(!halted && socket.isConnected()) {
 			try {
-				handleMsg(socket.getMsg());
+				Bais msg = socket.getMsg();
+				if (msg != null) {
+					handleMsg(msg);
+				} else {
+					Log.e(TAG, "Time out (I think");
+					if (chatActivity.progressDialog != null) {
+						chatActivity.networkDismissDialog();
+					}
+					break;
+				}
 			} catch (IOException e) {
+				Log.e(TAG, "Disconnected");
 				// Disconnected
 				break;
 			} catch (ParseException e) {
+				Log.e(TAG, "Parse Exception");
 				// Got message that overflowed length from server.
 				// No way to recover.
 				// TODO die completely
@@ -861,6 +872,20 @@ public class NetworkService extends Service {
 					while (it.hasNext()) {
 						it.next().writeToHist(message, false, null);
 					}
+					if (chan == null && channels.size() == 0) {
+						Log.e(TAG, "Am I banned?");
+						int loop = 0;
+						while (chatActivity == null) {
+							try {
+								Thread.sleep(100);
+							} catch (Exception e) {
+
+							}
+						}
+						if (chatActivity != null) {
+							chatActivity.bannedTest("Server Response: " + message);
+						}
+					}
 				}
 			} else {
 				if (chan == null) {
@@ -1015,7 +1040,7 @@ public class NetworkService extends Service {
 				break;
 			}
 			String message = msg.readString();
-			
+
 			dealWithPM(playerId, message);
 			break;
 		}/* case SendTeam: {
@@ -1059,12 +1084,12 @@ public class NetworkService extends Service {
 				joinedChannels.peek().writeToHist("Battle between " + playerName(p1) + 
 						" and " + playerName(p2) + " started!", false, null);
 				Intent intent;
-				boolean baked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("baked", false);
-				if (!baked) {
+				//boolean baked = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("baked", false);
+				//if (!baked) {
 					intent = new Intent(this, BattleActivity.class);
-				} else {
-					intent = new Intent(this, BattleActivityBaked2.class);
-				}
+				//} else {
+					//intent = new Intent(this, BattleActivityBaked2.class);
+				//}
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra("battleId", battleId);
 				startActivity(intent);
@@ -1090,11 +1115,13 @@ public class NetworkService extends Service {
 					return;
 				}
 	            BattleConf conf = new BattleConf(msg, serverVersion.compareTo(new ProtocolVersion(1,0)) < 0);
+				/*
 				if (conf.mode != 0) {
 					Log.e(TAG, "Can't watch doubles/triples/rotation: " + battleId);
 
 					return;
 				}
+				*/
 	            PlayerInfo p1 = getNonNullPlayer(conf.id(0));
 	            PlayerInfo p2 = getNonNullPlayer(conf.id(1));
 	            SpectatingBattle battle = new SpectatingBattle(conf, p1, p2, battleId, this);

@@ -70,6 +70,7 @@ public class TeambuilderActivity extends FragmentActivity {
 	
 	public static final int PICKFILE_RESULT_CODE = 1;
 	public static final int PICKCOLOR_RESULT_CODE = 2;
+	public static final int PICKCOLOR_MM_RESULT_CODE = 4;
 	public static final int POKEEDIT_RESULT_CODE = 605;
 	
 	private class MyAdapter extends FragmentPagerAdapter

@@ -15,6 +15,7 @@ public class MoveInfo extends GenInfo {
 		byte pp = 5;
 		byte accuracy = 0;
 		byte power = 0;
+		byte target = 0;
 		String effect = null;
 
 		Move(String name) {
@@ -72,6 +73,11 @@ public class MoveInfo extends GenInfo {
         return moveNames.get(num).damageClass;
     }
 
+	public static byte range(int num) {
+		loadRange();
+		return moveNames.get(num).target;
+	}
+
 	public static byte type(int num) {
 		loadPokeTypes();
 		return moveNames.get(num).type;
@@ -117,6 +123,12 @@ public class MoveInfo extends GenInfo {
 
 		String effect = moveNames.get(num).effect;
 		return effect == null ? "" : effect;
+	}
+
+	public static String targetString(int num) {
+		loadRange();
+
+		return Target.values()[moveNames.get(num).target].getName();
 	}
 
 	public static String message(int num, int part) {
@@ -221,20 +233,36 @@ public class MoveInfo extends GenInfo {
 	}
 
 	static boolean damageClassloaded = false;
-        private static void loadDamageClasses() {
-            if (damageClassloaded) {
-                return;
-            }
-			testLoad();
-            damageClassloaded = true;
-			String path = "db/moves/" + thisGen + "G/damage_class.txt";
-            InfoFiller.fill(path, new FillerByte() {
-                @Override
-                void fillByte(int i, byte b) {
-                    moveNames.get(i).damageClass = b;
-                }
-            });
-        }
+	private static void loadDamageClasses() {
+		if (damageClassloaded) {
+			return;
+		}
+		testLoad();
+		damageClassloaded = true;
+		String path = "db/moves/" + thisGen + "G/damage_class.txt";
+		InfoFiller.fill(path, new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				moveNames.get(i).damageClass = b;
+			}
+		});
+	}
+
+	static boolean rangeloaded = false;
+	private static void loadRange() {
+		if (rangeloaded) {
+			return;
+		}
+		testLoad();
+		rangeloaded = true;
+		String path = "db/moves/" + thisGen + "G/range.txt";
+		InfoFiller.fill(path, new FillerByte() {
+			@Override
+			void fillByte(int i, byte b) {
+				moveNames.get(i).target = b;
+			}
+		});
+	}
 
 	private static void loadPokeMoves() {
 		moveNames = new ArrayList<Move>();
@@ -243,7 +271,7 @@ public class MoveInfo extends GenInfo {
 				moveNames.add(new Move(b));
 			}
 		});
-        fillAllMoves();
+		fillAllMoves();
 	}
 
     private static void fillAllMoves() {
@@ -287,4 +315,22 @@ public class MoveInfo extends GenInfo {
         }
         return nameList;
     }
+
+	public static enum Target {
+		ChosenTarget {public final String getName() {return "Single Target";}},
+		PartnerOrUser {public final String getName() {return "Self or Ally";}},
+		Partner {public final String getName() {return "Single Ally";}},
+		MeFirstTarget {public final String getName() {return "Single Target";}},
+		AllButSelf {public final String getName() {return "All but Self";}},
+		Opponents {public final String getName() {return "Adjacent Foes";}},
+		TeamParty {public final String getName() {return "User's Team";}},
+		User {public final String getName() {return "Self";}},
+		All {public final String getName() {return "All";}},
+		RandomTarget {public final String getName() {return "Random";}},
+		Field {public final String getName() {return "Field";}},
+		OpposingTeam {public final String getName() {return "All Foes";}},
+		TeamSide {public final String getName() {return "All Allies";}},
+		IndeterminateTarget {public final String getName() {return "Self";}};
+		public abstract String getName();
+	}
 }

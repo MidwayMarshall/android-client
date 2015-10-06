@@ -1,20 +1,17 @@
 package com.podevs.android.poAndroid.battle;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.*;
-import android.content.pm.PackageManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
-import com.android.launcher.DragController;
-import com.android.launcher.DragLayer;
-import com.android.launcher.PokeDragIcon;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.podevs.android.poAndroid.Command;
 import com.podevs.android.poAndroid.NetworkService;
@@ -22,14 +19,10 @@ import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.battle.gl.ContinuousGameFrame;
 import com.podevs.android.poAndroid.battle.gl.tasks.Events;
 import com.podevs.android.poAndroid.battle.gl.tasks.TaskService2;
-import com.podevs.android.poAndroid.chat.ChatActivity;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
-import com.podevs.android.poAndroid.poke.ShallowShownPoke;
 import com.podevs.android.poAndroid.pokeinfo.InfoConfig;
 import com.podevs.android.poAndroid.pokeinfo.MoveInfo;
-import com.podevs.android.poAndroid.pokeinfo.PokemonInfo;
 import com.podevs.android.poAndroid.pokeinfo.TypeInfo;
-import com.podevs.android.utilities.Baos;
 
 ;
 
@@ -165,7 +158,7 @@ public class BattleActivityBaked2 extends BattleActivity implements MyResultRece
         });
     }
 
-    private TaskService2 taskService;
+    public TaskService2 taskService;
     private ContinuousGameFrame battleScreen;
     public void callForward(ContinuousGameFrame frame, TaskService2 service) {
         this.battleScreen = frame;
