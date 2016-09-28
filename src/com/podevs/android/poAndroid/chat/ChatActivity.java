@@ -925,7 +925,22 @@ public class ChatActivity extends Activity {
 						.setTitle("Select clauses");
 				return builder.create();
 			}case LoadTeam:{
-				//View layout = inflater.inflate();
+				final CharSequence teams[] = getSharedPreferences("team", 0).getString("files", "team.xml").split("\\|");
+				builder.setTitle("Load Team")
+						.setItems(teams, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								CharSequence selectedTeam = teams[which];
+								netServ.changeTeam(selectedTeam.toString());
+							}
+						})
+						.setOnCancelListener(new OnCancelListener() {
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								removeDialog(id);
+							}
+						});
+				return builder.create();
 			}case ControlPanel: {
 				View layout = inflater.inflate(R.layout.control_panel_layout, (LinearLayout) findViewById(R.id.control_panel_layout));
 				final EditText searchEdit = (EditText) layout.findViewById(R.id.search_edit);
@@ -939,12 +954,33 @@ public class ChatActivity extends Activity {
 				final ArrayAdapter<String> aliasesAdapter = new ArrayAdapter<String>(this, R.layout.alias_item, R.id.alias_text);
 				aliases.setAdapter(aliasesAdapter);
 
-				activeControlPanel = new ControlPanelGroup(searchEdit, status, auth, ip, seen, aliases, aliasesAdapter);
+				final Button kick = (Button) layout.findViewById(R.id.kick_button);
+				kick.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						netServ.playerKick(netServ.getID(searchEdit.getText().toString()));
+					}
+				});
+
+				final Button mute = (Button) layout.findViewById(R.id.mute_button);
+				mute.setEnabled(false);
+
+				final Button temp = (Button) layout.findViewById(R.id.temp_button);
+				temp.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				});
+
+				final Button ban = (Button) layout.findViewById(R.id.ban_button);
+				ban.setEnabled(netServ.me.auth > 1);
+
+				activeControlPanel = new ControlPanelGroup(searchEdit, status, auth, ip, seen, aliases, aliasesAdapter, kick, mute, temp, ban);
 
 				searchEdit.setText(controlUser);
 
 				final Button search = (Button) layout.findViewById(R.id.search_button);
-
 				search.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -1007,6 +1043,7 @@ public class ChatActivity extends Activity {
 			} else {
 				menu.findItem(R.id.controlpanel).setVisible(false);
 			}
+			menu.findItem(R.id.openPM).setVisible(!(netServ.pms.count() == 0));
 		}
 
 		return true;
@@ -1086,6 +1123,17 @@ public class ChatActivity extends Activity {
 			case R.id.controlpanel:
 				controlUser = "";
 				showDialog(ChatDialog.ControlPanel.ordinal());
+				break;
+			case R.id.openPM:
+				if (netServ == null) {
+					Toast.makeText(this, R.string.no_netserv, Toast.LENGTH_SHORT).show();
+				} else {
+					if (netServ.pms.count() > 0) {
+						Intent intent = new Intent(this, PrivateMessageActivity.class);
+						intent.putExtra("playerId", -2);
+						startActivity(intent);
+					}
+				}
 				break;
 		}
 		return true;
@@ -1391,7 +1439,7 @@ public class ChatActivity extends Activity {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				activeControlPanel.setUserInfo(info);
+				activeControlPanel.setUserInfo(info, netServ);
 			}
 		});
 	}

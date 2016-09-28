@@ -8,7 +8,6 @@ import android.util.SparseArray;
 import com.podevs.android.poAndroid.R;
 import com.podevs.android.poAndroid.poke.Gen;
 import com.podevs.android.poAndroid.poke.Poke;
-import com.podevs.android.poAndroid.poke.PokeEnums.Gender;
 import com.podevs.android.poAndroid.poke.ShallowBattlePoke;
 import com.podevs.android.poAndroid.poke.UniqueID;
 import com.podevs.android.poAndroid.pokeinfo.InfoFiller.Filler;
@@ -568,8 +567,8 @@ public class PokemonInfo {
 		} else {
 			res = "p" + uID.pokeNum + (uID.subNum == 0 ? "" : "_" + uID.subNum) +
 					(front ? "_front" : "_back");
-			if (poke.gender == Gender.Female.ordinal()) {
-				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == Gender.Female.ordinal())
+			if (poke.gender == GenderInfo.Gender.Female.ordinal()) {
+				if (InfoConfig.resources.getIdentifier(res + "f", "drawable", InfoConfig.pkgName) != 0 && poke.gender == GenderInfo.Gender.Female.ordinal())
 					// Special female sprite
 					res = res + "f";
 			}
@@ -649,21 +648,23 @@ public class PokemonInfo {
 			}
 		});
 		if (RegistryActivity.localize_assets) {
-			String path = "db/pokes/" + RegistryActivity.resources.getString(R.string.asset_localization) + "pokemons.txt";
-			InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
-				public void fill(int i, String s, String options) {
-					pokeNames.put(i, s);
-					pokemonsg.put(i, new PokeData());
+			String path = "db/pokes/" + InfoConfig.resources.getString(R.string.asset_localization) + "pokemons.txt";
+			if (InfoConfig.fileExists(path)) {
+				InfoFiller.uIDfill(path, new InfoFiller.OptionsFiller() {
+					public void fill(int i, String s, String options) {
+						pokeNames.put(i, s);
+						pokemonsg.put(i, new PokeData());
 
-					if (i > 16000) {
-						pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
-					} else if (i > pokeCount) {
-						pokeCount = i;
+						if (i > 16000) {
+							pokemonsg.get(i % 65536).maxForme = (byte) (i >> 16);
+						} else if (i > pokeCount) {
+							pokeCount = i;
+						}
+						pokemonsg.get(i).options = options;
+						namesToIds.put(s, new UniqueID(i));
 					}
-					pokemonsg.get(i).options = options;
-					namesToIds.put(s, new UniqueID(i));
-				}
-			});
+				});
+			}
 		}
 	}
 
